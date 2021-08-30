@@ -12,11 +12,11 @@ const port = 3000;
 
 // TODO: Fill with strings of your favorite quotes :)
 const quotes = [
-  'one',
-  'two',
-  'three',
-  'four',
-  'five'
+  'Always go one step further',
+  'Champions are made when nobody is looking',
+  'Be the change you want to see in the world',
+  'Friends show their love in times of trouble, not in happiness',
+  'Believe you can and you are halfway there'
 ];
 
 //Utility Function to return a random integer
@@ -37,13 +37,20 @@ const handleRequest = function(req, res) {
   }
 
   // TODO: GET ONE
-  if ((req.url == '/quote/' || req.url == '/quote') && req.method == "FILL ME IN") {
-    //YOUR CODE HERE
+  if ((req.url == '/quote/' || req.url == '/quote') && req.method == "GET") {
+    console.log('Getting one quote');
+    var quoteNum = getRandomInt(0, quotes.length);
+
+    res.writeHead(200);
+    res.end(quotes[quoteNum]);
 
   }
   // TODO: POST/CREATE
-  else if ((req.url == 'FILL ME IN' || req.url == 'FILL ME IN') && req.method == "FILL ME IN") {
-    //YOUR CODE HERE
+  else if ((req.url == 'FILL ME IN' || req.url == 'FILL ME IN') && req.method == "POST") {
+    console.log('Posting a new quote');
+
+    res.writeHead(201);
+    res.end();
   }
 
 //CATCH ALL ROUTE
