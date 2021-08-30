@@ -1,5 +1,8 @@
 var express = require('express');
 const app = express();
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, '/client')));
 
 const port = 3000;
 
@@ -64,17 +67,21 @@ app.get('/quote/?', (req, res) {
   res.send(quotes[quoteNum]);
 });
 
-// app.post('/quote/' || '/quote' , (req, res) {
-//   console.log('Posting a new quote');
-//   quotes.push(req.body);
-//   res.send('quote posted');
-// })
+app.post('/quote/' || '/quote' , (req, res) {
+  console.log('Posting a new quote');
+  quotes.push(req.data);
+  res.send('quote posted');
+})
 
 
 
 
-const server = http.createServer(handleRequest);
-server.listen(port);
+// const server = http.createServer(handleRequest);
+// server.listen(port);
+app.listen(port, () => {
+  console.log(`Listening express server on port ${port}!`)
+});
 
-console.log('Server is running in the terminal!');
-console.log(`Listening on http://localhost:${port}`);
+
+// console.log('Server is running in the terminal!');
+// console.log(`Listening on http://localhost:${port}`);
