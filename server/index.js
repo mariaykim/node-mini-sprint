@@ -1,7 +1,4 @@
-// var express = require('express');
-// const app = express();
 const http = require('http');
-
 
 //headers to allows CORS requests
 const headers = {
@@ -47,47 +44,33 @@ const handleRequest = function(req, res) {
 
     res.writeHead(200);
     res.end(quotes[quoteNum]);
-
   }
+
   // TODO: POST/CREATE
   else if ((req.url == '/quote/' || req.url == '/quote') && req.method == "POST") {
     console.log('Posting a new quote');
-    quotes.push(req.data);
-    res.writeHead(201);
-    res.end();
+    var body = '';
+    req.on('data', function (chunk) {
+      body += chunk.toString();
+    });
+    req.on('end', function () {
+      var quoteString = JSON.parse(body);
+      quotes.push(quoteString.quote);
+      console.log(quotes);
+      res.writeHead(201, headers);
+      res.end(JSON.stringify(body));
+    })
   }
 
 //CATCH ALL ROUTE
   else {
     res.writeHead(404,headers);
     res.end('Page not found');
-
   }
 }
 
-
-// app.get('/', (req, res) {
-//   console.log('redirecting');
-//   res.render('index') //redirect to quote
-// });
-
-// app.get('/quote/' || '/quote', (req, res) {
-//   console.log('Getting one quote');
-//   var quoteNum = getRandomInt(0, quotes.length);
-//   res.send(quotes[quoteNum]);
-// });
-
-// app.post('/quote/' || '/quote' , (req, res) {
-//   console.log('Posting a new quote');
-//   quotes.push(req.body);
-//   res.send('quote posted');
-// })
-
-
-
-
 const server = http.createServer(handleRequest);
-server.listen(port);
+server.listen(port)
 
 console.log('Server is running in the terminal!');
 console.log(`Listening on http://localhost:${port}`);
