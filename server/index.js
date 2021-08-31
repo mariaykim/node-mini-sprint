@@ -16,13 +16,13 @@ app.use(express.static('../react-client/dist/'));
 
 const port = 3000;
 
-const quotes = [
-  'Always go one step further',
-  'Champions are made when nobody is looking',
-  'Be the change you want to see in the world',
-  'Friends show their love in times of trouble, not in happiness',
-  'Believe you can and you are halfway there'
-];
+// const quotes = [
+//   'Always go one step further',
+//   'Champions are made when nobody is looking',
+//   'Be the change you want to see in the world',
+//   'Friends show their love in times of trouble, not in happiness',
+//   'Believe you can and you are halfway there'
+// ];
 
 //Utility Function to return a random integer
 function getRandomInt(min, max) {
@@ -39,15 +39,27 @@ app.get('/', (req, res) => {
 app.get('/quote', (req, res) => {
   console.log('Getting one quote');
   var quoteNum = getRandomInt(0, quotes.length);
-  res.status(200).send(quotes[quoteNum]);
+  models.quotes.getOne(quoteNum, (err, data) => {
+    if (err) {
+      res.error(err);
+    } else {
+      res.status(200).send(data);
+    }
+  })
 });
 
 app.post('/quote' , (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   console.log('Posting a new quote');
-  quotes.push(req.body.quote);
-  console.log(quotes);
-  res.send('quote posted');
+  //quotes.push(req.body.quote);
+  //console.log(quotes);
+  models.create(req.body.quote, (err, data) => {
+    if (err) {
+      res.error(err);
+    } else {
+      res.send(data);
+    }
+  })
 })
 
 app.listen(port, () => {
