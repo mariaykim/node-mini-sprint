@@ -1,14 +1,18 @@
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
+const cors = require('cors');
 const path = require('path');
 const bodyParser = require("body-parser");
 const router = express.Router();
 
-app.use(morgan('dev'));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../client')));
+app.use(cors());
+app.use(morgan('dev'));
+
+app.use(express.static('../react-client/dist/'));
 
 const port = 3000;
 
@@ -35,7 +39,7 @@ app.get('/', (req, res) => {
 app.get('/quote', (req, res) => {
   console.log('Getting one quote');
   var quoteNum = getRandomInt(0, quotes.length);
-  res.send(quotes[quoteNum]);
+  res.status(200).send(quotes[quoteNum]);
 });
 
 app.post('/quote' , (req, res) => {
