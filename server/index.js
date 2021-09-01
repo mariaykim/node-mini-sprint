@@ -5,7 +5,7 @@ const cors = require('cors');
 const path = require('path');
 const bodyParser = require("body-parser");
 const router = express.Router();
-
+var models = require('./models');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -24,25 +24,19 @@ const port = 3000;
 //   'Believe you can and you are halfway there'
 // ];
 
-//Utility Function to return a random integer
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-}
-
-app.get('/', (req, res) => {
-  console.log('redirecting');
-  res.render('index') //redirect to quote
-});
+// app.get('/', (req, res) => {
+//   console.log('redirecting');
+//   res.render('index') //redirect to quote
+// });
 
 app.get('/quote', (req, res) => {
   console.log('Getting one quote');
-  var quoteNum = getRandomInt(0, quotes.length);
-  models.quotes.getOne(quoteNum, (err, data) => {
+  models.quotes.getOne((err, data) => {
     if (err) {
-      res.error(err);
+      console.log('get one error occurred');
+      res.status(501);
     } else {
+      console.log('successful get one, sending data: ', data);
       res.status(200).send(data);
     }
   })
@@ -50,13 +44,15 @@ app.get('/quote', (req, res) => {
 
 app.post('/quote' , (req, res) => {
   //console.log(req.body);
-  console.log('Posting a new quote');
-  //quotes.push(req.body.quote);
-  //console.log(quotes);
-  models.create(req.body.quote, (err, data) => {
+  console.log('Posting a new quote', req.body.quote);
+  var params = [req.body.quote];
+  models.quotes.create(params, (err, data) => {
     if (err) {
-      res.error(err);
+      console.log('Error with post request', err);
+      res.status(503);
     } else {
+      console.log('Sending successful data');
+      console.log(data);
       res.send(data);
     }
   })

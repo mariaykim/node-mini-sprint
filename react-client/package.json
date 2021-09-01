@@ -4,7 +4,7 @@
   "description": "frontend for node mini",
   "main": "main.js",
   "scripts": {
-    "build": "webpack -dw",
+    "build": "webpack -dw --watch",
     "start": "live-server"
   },
   "author": "Tom Chandler",

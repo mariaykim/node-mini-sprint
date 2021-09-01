@@ -6,7 +6,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      quotes : [],
+      quotes : ['no'],
       value: ''
     }
 
@@ -17,13 +17,20 @@ export default class App extends React.Component {
   componentDidMount() {
     axios.get('http://localhost:3000/quote')
     .then(response => {
+      console.log('is this working???  ')
+      console.log(response.data[0].quotesText);
+      var theGetResponse = response.data[0].quotesText;
+      var addQuote = [];
+      addQuote.push(theGetResponse);
+      //console.log('I received the GET request data: ', response);
       this.setState({
-        quotes : [response.data]
+        quotes : addQuote
       })
     })
     .catch(error => {
-      console.log(error);
+      console.log('I did not receive the GET request data: ', error);
     })
+    console.log('What is my current quotes array state?: ' , this.state.quotes);
   }
 
   handleChange(e) {
@@ -32,9 +39,18 @@ export default class App extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-
-    this.setState({
-      quotes: [...this.state.quotes, this.state.value]
+    axios.post('http://localhost:3000/quote', { 'quote' : this.state.value})
+    .then(response => {
+      var temp = [];
+      for (var i = 0; i < this.state.quotes.length; i++) {
+        temp.push(this.state.quotes[i]);
+      }
+      this.setState({
+        quotes: [...temp, this.state.value]
+      })
+    })
+    .catch(error => {
+      console.log('There is an error with Axios POST', error);
     })
   }
 
@@ -48,7 +64,7 @@ export default class App extends React.Component {
         <input type="submit" value="Submit" />
       </form>
 
-      <QuoteBlock quotes={this.state.quotes} id="quote"></QuoteBlock>
+      <QuoteBlock quotes={this.state.quotes}></QuoteBlock>
       </div>
     )
   }
